@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_form_scan" model="ir.ui.view">
+            <field name="name">Scan</field>
+            <field name="model">foliage_fixer.scan</field>
+            <field name="arch" type="xml">
+                <form>
+<!--                    <header>-->
+<!--                        <button name="scan_image"-->
+<!--                                type="object"-->
+<!--                                string="Scan"/>-->
+<!--                    </header>-->
+                    <sheet>
+                        <group>
+                            <field name="image" widget="many2many_binary"/>
+                        </group>
+                        <group>
+                            <field name="plant_id"/>
+                        </group>
+                        <group>
+                            <field name="severity"/>
+                            <field name="classification"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_tree_scan" model="ir.ui.view">
+            <field name="name">Scan List</field>
+            <field name="model">foliage_fixer.scan</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="image" widget="image"/>
+                    <field name="classification"/>
+                    <field name="severity"/>
+                    <field name="severity_category"/>
+                    <field name="plant_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_calendar_scan" model="ir.ui.view">
+          <field name="model">foliage_fixer.scan</field>
+          <field name="arch" type="xml">
+            <calendar date_start="create_date"
+                      color="severity_category"
+            event_open_popup="true">
+                <field name="image"/>
+                <field name="plant_name" />
+                <field name="classification"/>
+                <field name="severity" />
+            </calendar>
+          </field>
+        </record>
+
+    </data>
+</odoo>

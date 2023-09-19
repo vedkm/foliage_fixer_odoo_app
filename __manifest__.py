@@ -21,12 +21,17 @@
     # any module necessary for this one to work correctly
     'depends': ['base'],
 
+    'external_dependencies': {'python' : ['requests']},
+
     # always loaded
     'data': [
         'security/foliage_fixer_security.xml',
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'views/plant_view.xml',
+        'views/scan_view.xml',
+        'views/foliage_fixer_menu.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

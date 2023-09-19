@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!--        Library app menu-->
+        <menuitem id="menu_foliage_fixer" name="FoliageFixer"/>
+
+        <record id="action_foliage_fixer_scan" model="ir.actions.act_window">
+            <field name="name">FoliageFixer Scans</field>
+            <field name="res_model">foliage_fixer.scan</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_foliage_fixer_plant" model="ir.actions.act_window">
+            <field name="name">FoliageFixer Plants</field>
+            <field name="res_model">foliage_fixer.plant</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_foliage_fixer_calendar" model="ir.actions.act_window">
+            <field name="name">FoliageFixer Calendar</field>
+            <field name="res_model">foliage_fixer.scan</field>
+            <field name="view_mode">calendar</field>
+        </record>
+
+        <menuitem id="menu_foliage_fixer_scan"
+                  name="Scans"
+                  parent="menu_foliage_fixer"
+                  action="action_foliage_fixer_scan"/>
+
+        <menuitem id="menu_foliage_fixer_plant"
+                  name="Plants"
+                  parent="menu_foliage_fixer"
+                  action="action_foliage_fixer_plant"/>
+
+        <menuitem id="menu_foliage_fixer_scan_calendar"
+                  name="Calendar"
+                  parent="menu_foliage_fixer"
+                  action="action_foliage_fixer_calendar"/>
+    </data>
+</odoo>

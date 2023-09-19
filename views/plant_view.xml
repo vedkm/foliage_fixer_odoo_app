@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_tree_plant" model="ir.ui.view">
+            <field name="name">Plant List</field>
+            <field name="model">foliage_fixer.plant</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="family"/>
+                    <field name="scan_ids"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

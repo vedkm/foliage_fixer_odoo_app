@@ -1,1 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_plant_user,FoliageFixerUser,model_foliage_fixer_plant,foliage_fixer_group_user,1,1,1,0
+access_plant_manager,FoliageFixerManager,model_foliage_fixer_plant,foliage_fixer_group_manager,1,1,1,1
+access_scan_user,FoliageFixerUser,model_foliage_fixer_scan,foliage_fixer_group_user,1,1,1,0
+access_scan_manager,FoliageFixerManager,model_foliage_fixer_scan,foliage_fixer_group_manager,1,1,1,1

@@ -21,7 +21,7 @@
     # any module necessary for this one to work correctly
     'depends': ['base'],
 
-    'external_dependencies': {'python' : ['requests']},
+    'external_dependencies': {'python': ['requests']},
 
     # always loaded
     'data': [

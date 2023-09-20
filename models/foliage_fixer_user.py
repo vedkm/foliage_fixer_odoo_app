@@ -5,11 +5,11 @@ class FoliageFixerUser(models.Model):
     _inherit = 'res.partner'
 
     firebase_password = fields.Char(string='Firebase Generated Password')
-    email = fields.Char(string='email', required=True)
+    email = fields.Char(string='email')
 
 
     def check_firebase_password(self):
         return self.firebase_password is not None
 
     def generate_password(self):
-        return True
+        self.firebase_password = 'generated'

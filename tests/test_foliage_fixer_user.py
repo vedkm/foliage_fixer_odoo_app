@@ -10,10 +10,12 @@ class TestFoliageFixerUser(common.TransactionCase):
 
 
     def test_01_generate_password(self):
-        before = self.firebase_password
-        assert True
+        partner = self.env.get('res.partner').create({'name': 'Test'})
+        before = partner.firebase_password
+        after = partner.generate_password()
+        self.assertNotEqual(before, after)
 
     def test_check_firebase_password(self):
-        user = self.env.ref('res.partner')
-        self.User = user
-        self.assertFalse(self.User.firebase_password)
+        partner = self.env.get('res.partner').create({'name': 'Test'})
+        partner.firebase_password = None
+        self.assertTrue(partner.check_firebase_password())

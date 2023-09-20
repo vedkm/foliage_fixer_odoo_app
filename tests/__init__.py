@@ -1,1 +1,1 @@
-# from . import test_foliage_fixer_user
+from . import test_foliage_fixer_user, test_plant, test_scan

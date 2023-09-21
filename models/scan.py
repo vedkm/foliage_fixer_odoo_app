@@ -51,10 +51,16 @@ class Scan(models.Model):
         for scan in self:
             logging.info('INITIAL SCAN: ' + str(scan.read()))
 
+            # if scan.
+
             scan.api_url = 'https://foliagefixerbackend-5niucyg5nq-ue.a.run.app/loginn'
 
             logging.info('SCAN API URL: ' + str(scan.read(fields=['api_url'])))
 
+            id_token = scan.get_token()
+            if not id_token:
+                logging.info('Error at model scan.get_token: authentication failed - no id token.')
+                return None
 
             try:
                 resp = requests.post(
@@ -63,7 +69,7 @@ class Scan(models.Model):
                         'image': scan.image
                     },
                     headers={
-                        'authorization': scan.get_new_token(email='test@test.com', password='123456')
+                        'authorization': id_token
                     }
                 )
                 logging.info('RESPONSE: ' + str(resp.json()))

@@ -1,7 +1,8 @@
 import logging
-from odoo.addons.foliage_fixer_app.services.firebase_auth_provider import FirebaseAuthProvider
+from ..services.firebase_auth_provider import FirebaseAuthProvider
 
 from odoo import fields, models, api
+from odoo import exceptions
 import requests
 
 
@@ -23,7 +24,7 @@ class AuthenticationMixin(models.AbstractModel):
                 tokens = self.auth.sign_in(email=partner.email, password=partner.firebase_password)
                 if not tokens:
                     logging.error('Error at authentication_mixin.get_token: sign in failed.')
-                    return False
+                    raise exceptions.AccessError('Firebase authentication failed.')
                 id_token = tokens['id_token']
                 refresh_token = tokens['refresh_token']
                 partner.with_context(id_token=id_token, refresh_token=refresh_token)
@@ -32,7 +33,7 @@ class AuthenticationMixin(models.AbstractModel):
                 tokens = self.auth.sign_up(email=partner.email, password=partner.firebase_password)
                 if not tokens:
                     logging.error('Error at authentication_mixin.get_token: sign in failed after generating password.')
-                    return False
+                    raise exceptions.AccessError('Firebase authentication failed.')
                 id_token = tokens['id_token']
                 refresh_token = tokens['refresh_token']
                 partner.with_context(id_token=id_token, refresh_token=refresh_token)

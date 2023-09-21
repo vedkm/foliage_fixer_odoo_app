@@ -27,4 +27,4 @@ class TestScan(common.SingleTransactionCase):
         })
         scan.scan()
         _logger.info('FINAL SCAN: ' + str(scan.read()))
-        # self.assertEqual(scan.classification, 'Healthy')
+        self.assertEqual(scan.classification, 'Healthy')

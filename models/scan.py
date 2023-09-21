@@ -49,14 +49,6 @@ class Scan(models.Model):
     def scan(self):
         self.ensure_one()
         for scan in self:
-            logging.info('INITIAL SCAN: ' + str(scan.read()))
-
-            # if scan.
-
-            scan.api_url = 'https://foliagefixerbackend-5niucyg5nq-ue.a.run.app/loginn'
-
-            logging.info('SCAN API URL: ' + str(scan.read(fields=['api_url'])))
-
             id_token = scan.get_token()
             if not id_token:
                 logging.info('Error at model scan.get_token: authentication failed - no id token.')

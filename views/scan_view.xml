@@ -6,11 +6,11 @@
             <field name="model">foliage_fixer.scan</field>
             <field name="arch" type="xml">
                 <form>
-<!--                    <header>-->
-<!--                        <button name="scan_image"-->
-<!--                                type="object"-->
-<!--                                string="Scan"/>-->
-<!--                    </header>-->
+                    <header>
+                        <button name="scan"
+                                type="object"
+                                string="Scan"/>
+                    </header>
                     <sheet>
                         <group>
                             <field name="image" widget="many2many_binary"/>
@@ -32,7 +32,7 @@
             <field name="model">foliage_fixer.scan</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="image" widget="image"/>
+                    <field name="image_binary" widget="image"/>
                     <field name="classification"/>
                     <field name="severity"/>
                     <field name="severity_category"/>

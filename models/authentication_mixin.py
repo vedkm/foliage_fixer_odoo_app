@@ -15,9 +15,9 @@ class AuthenticationMixin(models.AbstractModel):
     def get_token(self):
 
         partner = self.env.get('res.partner').browse([self.env.user['id']])
-        # partner = self.env.get('res.partner').search(['partner_id', 'equal', user.partner_id])
 
-        id_token = self.env.context.get('foliage_fixer_api_token')
+        # id_token = self.env.context.get('foliage_fixer_api_token')
+        id_token = None
 
         if id_token is None:
             if partner.check_firebase_password():

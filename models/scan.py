@@ -1,3 +1,5 @@
+import base64
+
 from odoo import fields, models, api
 import requests
 import logging
@@ -9,10 +11,14 @@ class Scan(models.Model):
     _description = 'Scan'
     _inherit = ['foliage_fixer.authentication.mixin']
 
-    image = fields.Many2many('ir.attachment', string='Image', required=True)
+    name = fields.Char(string='Name', compute='_compute_name')
 
-    classification = fields.Char(string='Classification', compute='scan', readonly=False, store=True)
-    severity = fields.Float(string='Severity')
+    image = fields.Many2many('ir.attachment', string='Image', required=True)
+    # not sure if this will affect performance
+    image_binary = fields.Binary(string='Image', related='image.datas')
+
+    classification = fields.Char(string='Classification', compute='scan', readonly=True, store=True)
+    severity = fields.Float(string='Severity', readonly=True)
     severity_category = fields.Selection([
         ('Healthy', 'green'),
         ('Slightly Unhealthy', 'yellow'),
@@ -33,18 +39,23 @@ class Scan(models.Model):
     @api.depends('severity')
     def _compute_severity_category(self):
         for scan in self:
-            if scan.severity < 0.15:
+            if scan.severity < 15:
                 scan.severity_category = 'Healthy'
-            if 0.15 <= scan.severity < 0.65:
+            if 15 <= scan.severity < 80:
                 scan.severity_category = 'Slightly Unhealthy'
-            if 0.65 <= scan.severity < 1:
+            if 80 <= scan.severity <= 100:
                 scan.severity_category = 'Unhealthy'
 
     @api.constrains('severity')
     def _check_severity(self):
         for scan in self:
-            if scan.severity < 0 or scan.severity > 1:
-                raise ValidationError('Severity must be a decimal between 0 and 1.')
+            if scan.severity < 0 or scan.severity > 100:
+                raise ValidationError('Severity must be a float between 0 and 100.')
+
+    @api.depends('plant_id', 'classification', 'severity')
+    def _compute_name(self):
+        for scan in self:
+            scan.name = f"{scan.plant_name}: {scan.classification}"
 
     def scan(self):
         self.ensure_one()
@@ -54,11 +65,14 @@ class Scan(models.Model):
                 logging.info('Error at model scan.get_token: authentication failed - no id token.')
                 return None
 
+            image_data = scan.image.datas
+            decoded = base64.b64decode(image_data)
+
             try:
                 resp = requests.post(
                     url='https://foliagefixerbackend-5niucyg5nq-ue.a.run.app/classify',
-                    data={
-                        'image': scan.image
+                    files={
+                        'image': decoded
                     },
                     headers={
                         'authorization': id_token

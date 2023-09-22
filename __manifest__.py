@@ -27,7 +27,6 @@
     'data': [
         'security/foliage_fixer_security.xml',
         'security/ir.model.access.csv',
-        'wizards/scan_create.xml',
         'views/views.xml',
         'views/templates.xml',
         'views/plant_view.xml',

@@ -69,7 +69,7 @@
             </field>
         </record>
 
-        <record id="scan_automated" model="base.automation"
+<!--        <record id="scan_automated" model="base.automation"-->
 
     </data>
 </odoo>

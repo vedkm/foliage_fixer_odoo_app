@@ -13,7 +13,7 @@ class Scan(models.Model):
 
     name = fields.Char(string='Name', compute='_compute_name')
 
-    image = fields.Many2many('ir.attachment', string='Image', required=True)
+    image = fields.Many2many('ir.attachment', string='Image Attachment', required=True)
     # not sure if this will affect performance
     image_binary = fields.Binary(string='Image', related='image.datas')
 

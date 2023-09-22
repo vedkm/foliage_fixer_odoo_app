@@ -15,7 +15,7 @@ class Scan(models.Model):
 
     image = fields.Many2many('ir.attachment', string='Image Attachment', required=True)
     # not sure if this will affect performance
-    image_binary = fields.Binary(string='Image', related='image.datas')
+    image_binary = fields.Binary(string='Image', related='image.datas', store=False)
 
     classification = fields.Char(string='Classification', compute='scan', readonly=True, store=True)
     severity = fields.Float(string='Severity', readonly=True)
@@ -25,10 +25,10 @@ class Scan(models.Model):
         ('Unhealthy', 'red')
     ], string='Severity Category',
         compute='_compute_severity_category',
-        store=True)
+        store=True, readonly=True)
 
     plant_id = fields.Many2one('foliage_fixer.plant',
-                               string='Plant')
+                               string='Plant', required=True)
     plant_name = fields.Char(string='Plant Name', related='plant_id.name')
 
     # @api.model
@@ -82,6 +82,8 @@ class Scan(models.Model):
                 scan.classification = resp.json().get('classification')
                 scan.severity = resp.json().get('severity')
             except requests.HTTPError as e:
-                logging.error(e)
+                logging.error(f'HTTP error from scan API: {str(e)}')
+            except requests.exceptions.RequestException as e:
+                logging.error('Error at scan request: ' + str(e))
             except Exception as e:
                 logging.error(e)

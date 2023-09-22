@@ -21,7 +21,7 @@ class AuthenticationMixin(models.AbstractModel):
 
         if id_token is None:
             if partner.check_firebase_password():
-                tokens = self.auth.sign_in(email=partner.email, password=partner.firebase_password)
+                tokens = self.auth.sign_in(email=partner.email, password=partner.get_firebase_password())
                 if not tokens:
                     logging.error('Error at authentication_mixin.get_token: sign in failed.')
                     raise exceptions.AccessError('Firebase authentication failed.')
@@ -30,7 +30,7 @@ class AuthenticationMixin(models.AbstractModel):
                 partner.with_context(id_token=id_token, refresh_token=refresh_token)
             else:
                 partner.generate_password()
-                tokens = self.auth.sign_up(email=partner.email, password=partner.firebase_password)
+                tokens = self.auth.sign_up(email=partner.email, password=partner.get_firebase_password())
                 if not tokens:
                     logging.error('Error at authentication_mixin.get_token: sign in failed after generating password.')
                     raise exceptions.AccessError('Firebase authentication failed.')

@@ -19,8 +19,8 @@
                             <field name="plant_id"/>
                         </group>
                         <group>
-                            <field name="severity"/>
-                            <field name="classification"/>
+                            <field name="severity" groups="foliage_fixer.group_manager"/>
+                            <field name="classification" groups="foliage_fixer.group_manager"/>
                         </group>
                     </sheet>
                 </form>

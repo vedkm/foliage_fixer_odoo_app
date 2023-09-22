@@ -23,12 +23,16 @@ def _decrypt_string(encrypted_string):
 
 
 class FoliageFixerUser(models.Model):
-    _inherit = 'res.partner'
+    _inherit = ['res.partner']
 
     firebase_password = fields.Char(string='Firebase Generated Password')
     email = fields.Char(string='email')
 
     def check_firebase_password(self):
+        '''
+        Checks if the current user has a firebase_password.
+        :return: true/false
+        '''
         self.ensure_one()
         for partner in self:
             if not partner.firebase_password:

@@ -1,15 +1,16 @@
 import base64
 
+import odoo.exceptions
 from odoo import fields, models, api
 import requests
 import logging
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class Scan(models.Model):
     _name = 'foliage_fixer.scan'
     _description = 'Scan'
-    _inherit = ['foliage_fixer.authentication.mixin']
+    _inherit = 'foliage_fixer.authentication.mixin'
 
     name = fields.Char(string='Name', compute='_compute_name')
 
@@ -20,9 +21,9 @@ class Scan(models.Model):
     classification = fields.Char(string='Classification', compute='scan', readonly=True, store=True)
     severity = fields.Float(string='Severity', readonly=True)
     severity_category = fields.Selection([
-        ('Healthy', 'green'),
-        ('Slightly Unhealthy', 'yellow'),
-        ('Unhealthy', 'red')
+        ('green', 'Healthy'),
+        ('yellow', 'Slightly Unhealthy'),
+        ('red', 'Unhealthy')
     ], string='Severity Category',
         compute='_compute_severity_category',
         store=True, readonly=True)
@@ -40,11 +41,11 @@ class Scan(models.Model):
     def _compute_severity_category(self):
         for scan in self:
             if scan.severity < 15:
-                scan.severity_category = 'Healthy'
+                scan.severity_category = 'green'
             if 15 <= scan.severity < 80:
-                scan.severity_category = 'Slightly Unhealthy'
+                scan.severity_category = 'yellow'
             if 80 <= scan.severity <= 100:
-                scan.severity_category = 'Unhealthy'
+                scan.severity_category = 'red'
 
     @api.constrains('severity')
     def _check_severity(self):
@@ -83,7 +84,9 @@ class Scan(models.Model):
                 scan.severity = resp.json().get('severity')
             except requests.HTTPError as e:
                 logging.error(f'HTTP error from scan API: {str(e)}')
+                raise UserError('Failed to scan. Received error from scan API.')
             except requests.exceptions.RequestException as e:
                 logging.error('Error at scan request: ' + str(e))
+                raise UserError('Failed to scan.')
             except Exception as e:
                 logging.error(e)

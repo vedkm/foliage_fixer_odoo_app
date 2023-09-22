@@ -7,6 +7,9 @@ import requests
 
 
 class AuthenticationMixin(models.AbstractModel):
+    """
+    Reusable model that provides authentication features to the importing class.
+    """
     _name = 'foliage_fixer.authentication.mixin'
     _description = 'Authentication Service'
 
@@ -39,3 +42,7 @@ class AuthenticationMixin(models.AbstractModel):
                 partner.with_context(id_token=id_token, refresh_token=refresh_token)
 
         return id_token
+
+    # def add_auth_to_request(self, request: requests.request):
+    #     token = self.get_token()
+

@@ -12,5 +12,35 @@
                 </tree>
             </field>
         </record>
+
+        <record id="view_search_plant" model="ir.ui.view">
+            <field name="name">Plant Filters</field>
+            <field name="model">foliage_fixer.plant</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="family"/>
+
+<!--                    <filter name="filter_classifications" string="Unhealthy" domain="[('scan_ids.classification','=','red')]"/>-->
+                </search>
+            </field>
+        </record>
+
+        <record id="view_form_plant" model="ir.ui.view">
+            <field name="name">Plant</field>
+            <field name="model">foliage_fixer.plant</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="family"/>
+                            <field name="scan_ids" widget="one2many"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
     </data>
 </odoo>

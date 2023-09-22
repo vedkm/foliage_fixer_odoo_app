@@ -19,8 +19,8 @@
                             <field name="plant_id"/>
                         </group>
                         <group>
-                            <field name="severity" groups="foliage_fixer.group_manager"/>
-                            <field name="classification" groups="foliage_fixer.group_manager"/>
+                            <field name="severity" />
+                            <field name="classification" />
                         </group>
                     </sheet>
                 </form>
@@ -54,6 +54,22 @@
             </calendar>
           </field>
         </record>
+
+        <record id="view_search_scan" model="ir.ui.view">
+            <field name="name">Scan Filters</field>
+            <field name="model">foliage_fixer.scan</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="classification"/>
+                    <field name="plant_name"/>
+                    <filter name="filter_high_severity_category" string="Unhealthy" domain="[('severity_category','=','red')]"/>
+                    <filter name="filter_medium_severity_category" string="Slightly Unhealthy" domain="[('severity_category','=','yellow')]"/>
+                    <filter name="filter_low_severity_category" string="Healthy" domain="[('severity_category','=','green')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="scan_automated" model="base.automation"
 
     </data>
 </odoo>

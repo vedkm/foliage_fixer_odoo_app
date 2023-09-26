@@ -18,7 +18,11 @@ class Scan(models.Model):
     # not sure if this will affect performance
     image_binary = fields.Binary(string='Image', related='image.datas', store=False)
 
-    classification = fields.Char(string='Classification', compute='scan', readonly=True, store=True)
+    classification = fields.Many2one('foliage_fixer.classification', string='Classification ID', compute='_compute_classification_id')
+    # classification = fields.Char(string='Classification', compute='scan', readonly=True, store=True)
+    classification_name = fields.Char(string='Classification', related='classification.name')
+    classification_result = fields.Char(string='Classification API Result')
+
     severity = fields.Float(string='Severity', readonly=True)
     severity_category = fields.Selection([
         ('green', 'Healthy'),
@@ -53,10 +57,21 @@ class Scan(models.Model):
             if scan.severity < 0 or scan.severity > 100:
                 raise ValidationError('Severity must be a float between 0 and 100.')
 
-    @api.depends('plant_id', 'classification', 'severity')
+    @api.depends('plant_id', 'classification_result', 'severity')
     def _compute_name(self):
         for scan in self:
-            scan.name = f"{scan.plant_name}: {scan.classification}"
+            scan.name = f"{scan.plant_name}: {scan.classification_name}"
+
+    @api.depends('classification_result')
+    def _compute_classification_id(self):
+        for scan in self:
+            classification_table = self.env.get('foliage_fixer.classification')
+            classification_record = classification_table.get_classification_by_name(scan.classification_result)
+            if classification_record is None:
+                classification_record = classification_table.create({
+                    'name': scan.classification_result
+                })
+            scan.classification = classification_record
 
     def scan(self):
         self.ensure_one()
@@ -80,7 +95,18 @@ class Scan(models.Model):
                     }
                 )
                 logging.info('RESPONSE: ' + str(resp.json()))
-                scan.classification = resp.json().get('classification')
+
+                # create new classification if it doesn't exist
+                # classification_name = resp.json().get('classification')
+                # classification_table = self.env.get('foliage_fixer.classification')
+                # if classification_table.contains_classification(classification_name):
+                #     classification = classification_table.get_classification_by_name(classification_name)
+                #     scan.classification_id = classification.id
+                # else:
+                #     classification = classification_table.create_classification(classification_name)
+                #     scan.classification_id = classification.id
+
+                scan.classification_result = resp.json().get('classification')
                 scan.severity = resp.json().get('severity')
                 # compute isn't executed after automated action
                 self._compute_severity_category()

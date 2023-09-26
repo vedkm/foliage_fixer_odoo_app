@@ -15,7 +15,7 @@
                         </group>
                         <group>
                             <field name="severity" />
-                            <field name="classification" />
+                            <field name="classification_name" />
                         </group>
                     </sheet>
                 </form>
@@ -28,7 +28,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="image_binary" widget="image"/>
-                    <field name="classification"/>
+                    <field name="classification_name"/>
                     <field name="severity"/>
                     <field name="severity_category"/>
                     <field name="plant_id"/>
@@ -44,7 +44,7 @@
             event_open_popup="true">
                 <field name="image"/>
                 <field name="plant_name" />
-                <field name="classification"/>
+                <field name="classification_name"/>
                 <field name="severity" />
             </calendar>
           </field>
@@ -55,7 +55,7 @@
             <field name="model">foliage_fixer.scan</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="classification"/>
+                    <field name="classification_name"/>
                     <field name="plant_name"/>
                     <filter name="filter_high_severity_category" string="Unhealthy" domain="[('severity_category','=','red')]"/>
                     <filter name="filter_medium_severity_category" string="Slightly Unhealthy" domain="[('severity_category','=','yellow')]"/>

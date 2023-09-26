@@ -20,3 +20,6 @@ class TestPlant(common.SingleTransactionCase):
         }
 
         self.assertDictEqual(expected, got)
+
+    # def test_compute_classification_ids(self):
+    #     [self.assertEqual() for plant.classification_ids in ]

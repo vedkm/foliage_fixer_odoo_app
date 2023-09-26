@@ -37,6 +37,9 @@
                             <field name="family"/>
                             <field name="scan_ids" widget="one2many"/>
                         </group>
+                        <group>
+                            <field name="classification_ids" widget="many2many"/>
+                        </group>
                     </sheet>
                 </form>
             </field>

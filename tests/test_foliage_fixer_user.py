@@ -1,14 +1,14 @@
 import logging
 from odoo import exceptions
 from odoo.tests import common
-
+import random
+import string
+from cryptography.fernet import Fernet
 
 class TestFoliageFixerUser(common.TransactionCase):
     def setUp(self, *args, **kwargs):
         super(TestFoliageFixerUser, self).setUp(*args, **kwargs)
         #test setup here
-
-
 
     def test_01_generate_password(self):
         partner = self.env.get('res.partner').create({'name': 'Test'})

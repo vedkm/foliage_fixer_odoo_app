@@ -82,6 +82,8 @@ class Scan(models.Model):
                 logging.info('RESPONSE: ' + str(resp.json()))
                 scan.classification = resp.json().get('classification')
                 scan.severity = resp.json().get('severity')
+                # compute isn't executed after automated action
+                self._compute_severity_category()
             except requests.HTTPError as e:
                 logging.error(f'HTTP error from scan API: {str(e)}')
                 raise UserError('Failed to scan. Received error from scan API.')

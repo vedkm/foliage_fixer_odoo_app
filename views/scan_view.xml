@@ -6,11 +6,6 @@
             <field name="model">foliage_fixer.scan</field>
             <field name="arch" type="xml">
                 <form>
-                    <header>
-                        <button name="scan"
-                                type="object"
-                                string="Scan"/>
-                    </header>
                     <sheet>
                         <group>
                             <field name="image" widget="many2many_binary"/>
@@ -69,7 +64,17 @@
             </field>
         </record>
 
-<!--        <record id="scan_automated" model="base.automation"-->
+        <record id="scan_automated" model="base.automation">
+            <field name="name">Automated Scan Action</field>
+            <field name="model_id" ref="foliage_fixer_app.model_foliage_fixer_scan"/>
+            <field name="state">code</field>
+            <field name="active">1</field>
+            <field name="trigger">on_write</field>
+            <field name="code">
+record = model.browse(env.context['active_id'])
+record.scan()
+            </field>
+        </record>
 
     </data>
 </odoo>

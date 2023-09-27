@@ -18,14 +18,20 @@ class AuthenticationMixin(models.AbstractModel):
 
     def get_token(self):
 
-        # partner = self.env.get('res.partner').browse([self.env.user['partner_id']])
-        # partner = self.env.get('res.partner').search([('id', '=', self.env.user['partner_id'])])
         partner = self.env.user['partner_id']
 
-        # id_token, refresh_token, id_token_expiry = self.get_auth_context()
+        id_token, refresh_token, id_token_expiry = self.get_auth_context()
         # logging.info(id_token)
         # TODO: implement token refresh
-        id_token = None
+        # id_token = None
+
+        if id_token_expiry is not None:
+            if id_token_expiry > datetime.datetime.now():
+                tokens = self.auth.refresh(grant_type='refresh_token', refresh_token=refresh_token)
+                id_token = tokens.get['id_token']
+                refresh_token = tokens.get['refresh_token']
+                expires_in = tokens.get['expires_in']
+                self.save_auth_context(id_token, refresh_token, expires_in)
 
         if id_token is None:
             if partner.check_firebase_password():
@@ -54,7 +60,7 @@ class AuthenticationMixin(models.AbstractModel):
     #     token = self.get_token()
 
     def save_auth_context(self, id_token: str, refresh_token: str, expires_in: str):
-        partner = self.env.get('res.partner').browse([self.env.user['id']])
+        partner = self.env.user['partner_id']
         id_token_expiry = datetime.datetime.now() + datetime.timedelta(seconds=int(expires_in))
         self.with_context(id_token=id_token, refresh_token=refresh_token, id_token_expiry=id_token_expiry)
 

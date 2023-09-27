@@ -23,12 +23,14 @@ class FirebaseAuthProvider:
 
             id_token = resp.json().get('idToken')
             refresh_token = resp.json().get('refreshToken')
+            expires_in = resp.json().get('expiresIn')
             if id_token is None or refresh_token is None:
                 return False
 
             return {
                 'id_token': id_token,
-                'refresh_token': refresh_token
+                'refresh_token': refresh_token,
+                'expires_in': expires_in
             }
         except Exception as e:
             logging.info('Exception at firebase_auth_provider.FirebaseAuthProvider.sign_up: ' + e.__repr__())
@@ -50,11 +52,13 @@ class FirebaseAuthProvider:
 
             id_token = resp.json().get('idToken')
             refresh_token = resp.json().get('refreshToken')
+            expires_in = resp.json().get('expiresIn')
             if id_token is None or refresh_token is None:
                 return False
             return {
                 'id_token': id_token,
-                'refresh_token': refresh_token
+                'refresh_token': refresh_token,
+                'expires_in': expires_in
             }
         except Exception as e:
             logging.info('Exception at firebase_auth_provider.FirebaseAuthProvider.sign_in: ' + e.__repr__())

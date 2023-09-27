@@ -1,3 +1,4 @@
+import datetime
 import logging
 from ..services.firebase_auth_provider import FirebaseAuthProvider
 
@@ -17,9 +18,13 @@ class AuthenticationMixin(models.AbstractModel):
 
     def get_token(self):
 
-        partner = self.env.get('res.partner').browse([self.env.user['id']])
+        # partner = self.env.get('res.partner').browse([self.env.user['partner_id']])
+        # partner = self.env.get('res.partner').search([('id', '=', self.env.user['partner_id'])])
+        partner = self.env.user['partner_id']
 
-        # id_token = self.env.context.get('foliage_fixer_api_token')
+        # id_token, refresh_token, id_token_expiry = self.get_auth_context()
+        # logging.info(id_token)
+        # TODO: implement token refresh
         id_token = None
 
         if id_token is None:
@@ -30,7 +35,8 @@ class AuthenticationMixin(models.AbstractModel):
                     raise exceptions.AccessError('Firebase authentication failed.')
                 id_token = tokens['id_token']
                 refresh_token = tokens['refresh_token']
-                partner.with_context(id_token=id_token, refresh_token=refresh_token)
+                expires_in = tokens['expires_in']
+                self.save_auth_context(id_token, refresh_token, expires_in)
             else:
                 partner.generate_password()
                 tokens = self.auth.sign_up(email=partner.email, password=partner.get_firebase_password())
@@ -39,10 +45,22 @@ class AuthenticationMixin(models.AbstractModel):
                     raise exceptions.AccessError('Firebase authentication failed.')
                 id_token = tokens['id_token']
                 refresh_token = tokens['refresh_token']
-                partner.with_context(id_token=id_token, refresh_token=refresh_token)
+                expires_in = tokens['expires_in']
+                self.save_auth_context(id_token, refresh_token, expires_in)
 
         return id_token
 
     # def add_auth_to_request(self, request: requests.request):
     #     token = self.get_token()
 
+    def save_auth_context(self, id_token: str, refresh_token: str, expires_in: str):
+        partner = self.env.get('res.partner').browse([self.env.user['id']])
+        id_token_expiry = datetime.datetime.now() + datetime.timedelta(seconds=int(expires_in))
+        self.with_context(id_token=id_token, refresh_token=refresh_token, id_token_expiry=id_token_expiry)
+
+    def get_auth_context(self):
+        partner = self.env.get('res.partner').browse([self.env.user['id']])
+        id_token = self.env.context.get('id_token')
+        refresh_token = self.env.context.get('refresh_token')
+        id_token_expiry = self.env.context.get('id_token_expiry')
+        return id_token, refresh_token, id_token_expiry

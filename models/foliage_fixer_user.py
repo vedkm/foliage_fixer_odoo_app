@@ -1,4 +1,6 @@
-from ..services import ff_encryption_service
+import logging
+
+from ..services.encryption_service import EncryptionService
 from odoo import fields, models, api
 
 
@@ -7,6 +9,8 @@ class FoliageFixerUser(models.Model):
 
     firebase_password = fields.Char(string='Firebase Generated Password')
     email = fields.Char(string='email')
+
+    encryption_service = EncryptionService()
 
     def check_firebase_password(self):
         '''
@@ -28,14 +32,23 @@ class FoliageFixerUser(models.Model):
         :param length:
         :return:
         """
-        raw = ff_encryption_service.generate_random_string(length)
-        encrypted = ff_encryption_service.encrypt_string(raw)
-
-        self.firebase_password = encrypted
+        raw = self.encryption_service.generate_random_string(length)
+        # logging.info("Generated pw: " + raw)
+        encrypted = self.encryption_service.encrypt_string(raw)
+        # logging.info('Encrypted pw: ' + encrypted.decode())
+        #
+        self.firebase_password = encrypted.decode()
+        # self.firebase_password = raw
 
     def get_firebase_password(self):
         """
         decrypts and returns firebase password
         :return:
         """
-        return ff_encryption_service.decrypt_string(self.firebase_password)
+        encrypted = self.firebase_password.encode()
+        # logging.info('Encrypted: ' + encrypted.decode())
+        decrypted = self.encryption_service.decrypt_string(encrypted)
+        # logging.info('Decrypted: ' + decrypted)
+        return decrypted
+
+        # return self.firebase_password

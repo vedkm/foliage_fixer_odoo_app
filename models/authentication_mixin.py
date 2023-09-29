@@ -21,9 +21,6 @@ class AuthenticationMixin(models.AbstractModel):
         partner = self.env.user['partner_id']
 
         id_token, refresh_token, id_token_expiry = self.get_auth_context()
-        # logging.info(id_token)
-        # TODO: implement token refresh
-        # id_token = None
 
         if id_token_expiry is not None:
             if id_token_expiry > datetime.datetime.now():
@@ -35,7 +32,10 @@ class AuthenticationMixin(models.AbstractModel):
 
         if id_token is None:
             if partner.check_firebase_password():
-                tokens = self.auth.sign_in(email=partner.email, password=partner.get_firebase_password())
+                firebase_password = partner.get_firebase_password()
+                if firebase_password is None:
+                    raise exceptions.MissingError('No firebase password found.')
+                tokens = self.auth.sign_in(email=partner.email, password=firebase_password)
                 if not tokens:
                     logging.error('Error at authentication_mixin.get_token: sign in failed.')
                     raise exceptions.AccessError('Firebase authentication failed.')
@@ -44,8 +44,10 @@ class AuthenticationMixin(models.AbstractModel):
                 expires_in = tokens['expires_in']
                 self.save_auth_context(id_token, refresh_token, expires_in)
             else:
-                partner.generate_password()
-                tokens = self.auth.sign_up(email=partner.email, password=partner.get_firebase_password())
+                firebase_password = partner.generate_password()
+                if firebase_password is None:
+                    raise exceptions.MissingError('Could not generate firebase password.')
+                tokens = self.auth.sign_up(email=partner.email, password=firebase_password)
                 if not tokens:
                     logging.error('Error at authentication_mixin.get_token: sign in failed after generating password.')
                     raise exceptions.AccessError('Firebase authentication failed.')
@@ -65,7 +67,7 @@ class AuthenticationMixin(models.AbstractModel):
         self.with_context(id_token=id_token, refresh_token=refresh_token, id_token_expiry=id_token_expiry)
 
     def get_auth_context(self):
-        partner = self.env.get('res.partner').browse([self.env.user['id']])
+        partner = self.env.user['partner_id']
         id_token = self.env.context.get('id_token')
         refresh_token = self.env.context.get('refresh_token')
         id_token_expiry = self.env.context.get('id_token_expiry')

@@ -1,11 +1,12 @@
 from odoo import exceptions
 from odoo.tests import common
 import logging
+import unittest
 
 _logger = logging.getLogger(__name__)
 
 
-class TestScan(common.SingleTransactionCase):
+class TestScan(common.TransactionCase):
     def setUp(self, *args, **kwargs):
         super(TestScan, self).setUp(*args, **kwargs)
         self.plant = self.env.get('foliage_fixer.plant').create({
@@ -49,9 +50,6 @@ class TestScan(common.SingleTransactionCase):
         classification = scan.classification
         self.assertEqual(scan.classification.id, classification.id)
 
-
-
-
     # def test_scan(self):
     #     logging.info('STARTING TestScan.test_scan')
     #     scan = self.Scan.create({
@@ -62,3 +60,4 @@ class TestScan(common.SingleTransactionCase):
     #     scan.scan()
     #     _logger.info('FINAL SCAN: ' + str(scan.read()))
     #     self.assertEqual(scan.classification, 'Healthy')
+

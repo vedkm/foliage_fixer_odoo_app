@@ -1,6 +1,8 @@
 import logging
 import unittest
-from firebase_auth_provider import FirebaseAuthProvider
+from ..services.firebase_auth_provider import FirebaseAuthProvider
+
+
 class TestFirebaseAuthProvider(unittest.TestCase):
 
     def setUp(self):
@@ -23,6 +25,7 @@ class TestFirebaseAuthProvider(unittest.TestCase):
         logging.info(tokens['id_token'])
         self.assertIsNone(tokens['refresh_token'])
         logging.info(tokens['refresh_token'])
+
 
 if __name__ == '__main__':
     unittest.main()

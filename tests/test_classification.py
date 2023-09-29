@@ -36,6 +36,16 @@ class TestClassification(common.TransactionCase):
         classification = self.Classification.get_classification_by_name(test_classification)
         self.assertIsNone(classification)
 
+    def test_03_get_classification_none(self):
+        test_classification = None
+        classification = self.Classification.get_classification_by_name(test_classification)
+        self.assertIsNone(classification)
+
+    def test_04_get_classification_false(self):
+        test_classification = False
+        classification = self.Classification.get_classification_by_name(test_classification)
+        self.assertIsNone(classification)
+
 
 if __name__ == '__main__':
     unittest.main()

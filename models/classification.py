@@ -18,6 +18,6 @@ class Classification(models.Model):
 
     def get_classification_by_name(self, name: str):
         classification = self.search([('name', '=', name)])
-        if not classification:
+        if not classification or classification is None:
             return None
         return classification

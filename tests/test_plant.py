@@ -1,5 +1,6 @@
 from odoo import exceptions
 from odoo.tests import common
+import unittest
 
 
 class TestPlant(common.SingleTransactionCase):
@@ -23,3 +24,7 @@ class TestPlant(common.SingleTransactionCase):
 
     # def test_compute_classification_ids(self):
     #     [self.assertEqual() for plant.classification_ids in ]
+
+
+# if __name__ == '__main__':
+#     unittest.main()

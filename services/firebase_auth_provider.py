@@ -3,7 +3,6 @@ import logging
 
 
 class FirebaseAuthProvider:
-    # TODO: should be encrypted
     api_key = 'AIzaSyBbbVpZeszVu5jT1hFVCuSvXgTz2hoWYRg'
 
     def sign_up(self, email, password):

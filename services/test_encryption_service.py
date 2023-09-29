@@ -1,5 +1,5 @@
 import unittest
-import encryption_service
+from ..services import encryption_service
 
 
 class TestEncryptionService(unittest.TestCase):

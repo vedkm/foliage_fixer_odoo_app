@@ -5,7 +5,8 @@ from odoo import fields, models, api
 import requests
 import logging
 from odoo.exceptions import ValidationError, UserError
-
+from ..services.scanner_service import TomatoScannerService
+# from dotenv import load_dotenv
 
 class Scan(models.Model):
     _name = 'foliage_fixer.scan'
@@ -69,7 +70,7 @@ class Scan(models.Model):
                 })
             scan.classification = classification_record
 
-    def scan(self):
+    def scan(self, scanner_service=TomatoScannerService()):
         self.ensure_one()
         for scan in self:
             id_token = scan.get_token()
@@ -80,27 +81,8 @@ class Scan(models.Model):
             image_data = scan.image.datas
             decoded = base64.b64decode(image_data)
 
-            try:
-                resp = requests.post(
-                    url='https://foliagefixerbackend-5niucyg5nq-ue.a.run.app/classify',
-                    files={
-                        'image': decoded
-                    },
-                    headers={
-                        'authorization': id_token
-                    }
-                )
-                logging.info('RESPONSE: ' + str(resp.json()))
-
-                scan.classification_result = resp.json().get('classification')
-                scan.severity = resp.json().get('severity')
-                # compute isn't executed after automated action
-                self._compute_severity_category()
-            except requests.HTTPError as e:
-                logging.error(f'HTTP error from scan API: {str(e)}')
-                raise UserError('Failed to scan. Received error from scan API.')
-            except requests.exceptions.RequestException as e:
-                logging.error('Error at scan request: ' + str(e))
-                raise UserError('Failed to scan.')
-            except Exception as e:
-                logging.error(e)
+            scan_results = scanner_service.scan(decoded, id_token)
+            scan.classification_result = scan_results.get('classification')
+            scan.severity = scan_results.get('severity')
+            # compute isn't executed after automated action
+            self._compute_severity_category()

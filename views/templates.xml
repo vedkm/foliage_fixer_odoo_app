@@ -19,6 +19,15 @@
             </t>
           </dl>
         </template>
--->
+
+        -->
+        <template id="qunit_suite" name="plant test"
+                  inherit_id="web.qunit_suite">
+            <xpath expr="." position="inside">
+                <script type="text/javascript"
+                        src="/foliage_fixer_app/static/tests/
+        plant_form_tests.js" />
+            </xpath>
+        </template>
     </data>
 </odoo>

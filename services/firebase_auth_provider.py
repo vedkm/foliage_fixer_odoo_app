@@ -3,7 +3,8 @@ import logging
 
 
 class FirebaseAuthProvider:
-    api_key = 'AIzaSyBbbVpZeszVu5jT1hFVCuSvXgTz2hoWYRg'
+    def __init__(self, api_key='AIzaSyBbbVpZeszVu5jT1hFVCuSvXgTz2hoWYRg'):
+        self.api_key = api_key
 
     def sign_up(self, email, password):
         try:

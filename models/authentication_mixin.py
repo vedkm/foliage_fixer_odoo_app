@@ -14,9 +14,9 @@ class AuthenticationMixin(models.AbstractModel):
     _name = 'foliage_fixer.authentication.mixin'
     _description = 'Authentication Service'
 
-    auth = FirebaseAuthProvider()
+    # auth = FirebaseAuthProvider()
 
-    def get_token(self):
+    def get_token(self, auth_provider):
 
         partner = self.env.user['partner_id']
 
@@ -24,7 +24,7 @@ class AuthenticationMixin(models.AbstractModel):
 
         if id_token_expiry is not None:
             if id_token_expiry > datetime.datetime.now():
-                tokens = self.auth.refresh(grant_type='refresh_token', refresh_token=refresh_token)
+                tokens = auth_provider.refresh(grant_type='refresh_token', refresh_token=refresh_token)
                 id_token = tokens.get['id_token']
                 refresh_token = tokens.get['refresh_token']
                 expires_in = tokens.get['expires_in']
@@ -35,7 +35,7 @@ class AuthenticationMixin(models.AbstractModel):
                 firebase_password = partner.get_firebase_password()
                 if firebase_password is None:
                     raise exceptions.MissingError('No firebase password found.')
-                tokens = self.auth.sign_in(email=partner.email, password=firebase_password)
+                tokens = auth_provider.sign_in(email=partner.email, password=firebase_password)
                 if not tokens:
                     logging.error('Error at authentication_mixin.get_token: sign in failed.')
                     raise exceptions.AccessError('Firebase authentication failed.')
@@ -47,7 +47,7 @@ class AuthenticationMixin(models.AbstractModel):
                 firebase_password = partner.generate_password()
                 if firebase_password is None:
                     raise exceptions.MissingError('Could not generate firebase password.')
-                tokens = self.auth.sign_up(email=partner.email, password=firebase_password)
+                tokens = auth_provider.sign_up(email=partner.email, password=firebase_password)
                 if not tokens:
                     logging.error('Error at authentication_mixin.get_token: sign in failed after generating password.')
                     raise exceptions.AccessError('Firebase authentication failed.')

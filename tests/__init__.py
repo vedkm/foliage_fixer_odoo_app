@@ -1,1 +1,1 @@
-from . import test_foliage_fixer_user, test_plant, test_scan, test_authentication_mixin, test_classification
+from . import test_foliage_fixer_user, test_plant, test_scan, test_authentication_mixin, test_classification, test_scanner_service

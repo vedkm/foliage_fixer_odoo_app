@@ -1,8 +1,9 @@
 import unittest
 from ..services import encryption_service
+from odoo.tests import common
 
 
-class TestEncryptionService(unittest.TestCase):
+class TestEncryptionService(common.TransactionCase):
     def setUp(self) -> None:
         self.test_f = encryption_service.EncryptionService()
 

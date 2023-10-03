@@ -6,11 +6,15 @@ import requests
 import logging
 from odoo.exceptions import ValidationError, UserError
 from ..services.scanner_service import TomatoScannerService
+from ..services.firebase_auth_provider import FirebaseAuthProvider
+
+
 # from dotenv import load_dotenv
 
 class Scan(models.Model):
     _name = 'foliage_fixer.scan'
     _description = 'Scan'
+    # TODO: in hindsight, I really don't like this. Makes future development more difficult
     _inherit = 'foliage_fixer.authentication.mixin'
 
     name = fields.Char(string='Name', compute='_compute_name')
@@ -70,10 +74,10 @@ class Scan(models.Model):
                 })
             scan.classification = classification_record
 
-    def scan(self, scanner_service=TomatoScannerService()):
+    def scan(self, scanner_service=TomatoScannerService(), auth_provider=FirebaseAuthProvider()):
         self.ensure_one()
         for scan in self:
-            id_token = scan.get_token()
+            id_token = scan.get_token(auth_provider=auth_provider)
             if not id_token:
                 logging.info('Error at model scan.get_token: authentication failed - no id token.')
                 return None
